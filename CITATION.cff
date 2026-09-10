@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this public software scaffold, please cite the repository."
+title: "Contextual Representation & Intervention"
+type: software
+authors:
+  - family-names: "Zhong"
+    given-names: "Yanlu"
+version: 0.1.0
+date-released: 2026-09-09
+license: MIT
+repository-code: "https://github.com/Yanlu-Zhong/Contextual-Representation-Intervention"
