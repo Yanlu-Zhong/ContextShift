@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "contextual-mechanism-demo"
 version = "0.1.0"
-description = "Publication-safe synthetic utilities for representation-to-intervention analysis"
+description = "Utilities for contextual representation analysis, subspace modeling, and activation intervention"
 requires-python = ">=3.10"
 dependencies = [
   "numpy>=1.26",
