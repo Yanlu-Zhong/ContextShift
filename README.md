@@ -1,55 +1,45 @@
-# Contextual Representation & Intervention
+# ContextShift
 
-**A publication-safe research portfolio demonstrating a controlled representation-to-intervention workflow for context-sensitive language-model analysis.**
+**Probing and intervening on contextual representations in language models.**
 
-This repository is a public companion to an ongoing research project. It is designed to show the **technical scope, experimental logic, and reproducible engineering** of the work without disclosing manuscript-specific materials during peer review.
+ContextShift studies how controlled changes in context are reflected in internal language-model representations and how targeted changes to those representations affect downstream behavior. The project combines controlled experimental contrasts, representation geometry, held-out confirmation, low-dimensional subspace modeling, activation intervention, and robust statistical inference.
 
-The public release uses only deterministic synthetic data and generalized labels. It does **not** contain the manuscript, submission venue, private prompts/stimuli, exact model identity, true experimental scale, manuscript-specific layer/subspace choices, empirical coefficients, paper figures, or inferential conclusions.
-
-## What this project demonstrates
-
-The private research workflow moves from controlled representational analysis to causal-style activation interventions while keeping development decisions separate from confirmation inference.
+## Research workflow
 
 ```mermaid
 flowchart LR
-    A[Controlled factorial inputs] --> B[Representation extraction]
+    A[Controlled inputs] --> B[Representation extraction]
     B --> C[Cross-form geometry]
     C --> D[Development-only selection]
     D --> E[Held-out confirmation]
-    E --> F[Intervention basis construction]
-    F --> G[Donor / ablation interventions]
-    G --> H[Selectivity controls]
-    H --> I[Bootstrap + randomization + LOO audit]
+    E --> F[Subspace construction]
+    F --> G[Targeted interventions]
+    G --> H[Matched controls]
+    H --> I[Bootstrap + randomization + LOO]
 ```
 
-The public code provides generalized implementations of:
+The repository provides reusable implementations of:
 
 - deterministic development/confirmation splitting;
 - vector normalization, cosine geometry, and cross-form directional alignment;
-- family-level bootstrap confidence intervals;
+- grouped bootstrap confidence intervals;
 - sign-randomization tests and standardized paired effects;
-- leave-one-family-out robustness analysis;
+- leave-one-group-out robustness analysis;
 - orthonormal subspace construction with energy-based rank selection;
 - projection-based donor replacement;
 - energy-matched partial ablation;
 - synthetic end-to-end validation and unit tests.
 
-## Why this repository is intentionally redacted
-
-The underlying project is still unpublished. A normal full-reproduction release would reveal design details that can identify the manuscript or expose results before publication. This repository therefore follows a **portfolio-safe disclosure boundary**: the engineering pattern is public, but the manuscript-specific scientific payload remains private.
-
-See [`docs/PUBLIC_RELEASE_SCOPE.md`](docs/PUBLIC_RELEASE_SCOPE.md) for the exact boundary.
-
 ## Repository layout
 
 ```text
 src/contextual_mechanism/    reusable analysis utilities
-scripts/                     executable synthetic demonstration
-data/sample/                 synthetic family-level fixture
-results/example/             example outputs from synthetic data
+scripts/                     executable end-to-end demonstration
+data/sample/                 synthetic family-level data
+results/example/             example analysis outputs
 tests/                       unit tests for statistical/vector operations
-docs/                        methods, disclosure scope, and portfolio summary
-.github/workflows/            CI test configuration
+docs/                        methods and implementation notes
+.github/workflows/           CI test configuration
 ```
 
 ## Quick start
@@ -60,7 +50,7 @@ python scripts/run_demo.py --output-dir results/generated
 pytest -q
 ```
 
-The demo writes:
+The demo produces:
 
 ```text
 results/generated/
@@ -70,55 +60,52 @@ results/generated/
 └── synthetic_effects.png
 ```
 
-All generated values are synthetic and should **not** be interpreted as manuscript results.
-
 ## Technical components
 
 ### 1. Controlled representational geometry
 
-The geometry module operates on paired directional representations from independently generated forms. It computes normalized direction vectors and cross-form alignment while preserving family-level grouping for inference.
+The geometry module operates on paired directional representations from independently generated forms. It computes normalized direction vectors, cosine similarity, and cross-form alignment while retaining group structure for downstream inference.
 
 ### 2. Held-out statistical inference
 
-The inference module implements grouped bootstrap intervals, sign-randomization, paired standardized effects, and leave-one-group-out sensitivity. These tools support decision rules that depend on **effect magnitude and stability**, not a single p-value.
+The inference module implements grouped bootstrap intervals, sign-randomization, paired standardized effects, and leave-one-group-out sensitivity. Development decisions and confirmation analyses are kept separate so that model-selection choices are not optimized on the final evaluation split.
 
 ### 3. Subspace construction
 
-The intervention module builds orthonormal bases from development-only contrast vectors using SVD. A generalized energy threshold selects the smallest basis that captures a specified fraction of development variance.
+The intervention module builds orthonormal bases from development contrast vectors using singular value decomposition. Energy-based rank selection provides a compact representation of the dominant contrast structure.
 
 ### 4. Activation interventions
 
-Two reusable operations are demonstrated:
+Two intervention operators are included:
 
-- **donor replacement**: replace only the coordinates of a recipient vector that lie inside a selected subspace;
-- **partial ablation**: shrink selected coordinates toward zero while leaving the orthogonal complement unchanged.
+- **donor replacement** — replaces the coordinates of a recipient vector that lie inside a selected subspace with the corresponding donor coordinates;
+- **partial ablation** — attenuates selected coordinates while preserving the orthogonal complement.
 
-The synthetic demo also illustrates perturbation-energy matching for comparing intervention bases more fairly.
+The demonstration also includes perturbation-energy matching for more comparable intervention baselines.
 
 ### 5. Robustness and selectivity
 
-The workflow separates the focal intervention from matched/random controls and reports grouped uncertainty and leave-one-out stability. Exact manuscript-specific controls are intentionally withheld.
+The analysis workflow combines matched controls with grouped uncertainty estimation, randomization-based inference, standardized effects, and leave-one-group-out sensitivity checks. Together, these components test whether an observed representational pattern is stable and whether an intervention effect is selective rather than a consequence of generic perturbation.
 
-## Public-release design principles
+## Example data
 
-| Principle | Public implementation | Withheld during review |
-|---|---|---|
-| Experimental control | General factorial schema | Real stimuli and lexical templates |
-| Representation analysis | Reusable vector geometry | Exact model/layer choices |
-| Confirmation logic | Deterministic held-out split | True family counts and split constants |
-| Intervention analysis | Projection/subspace utilities | Manuscript-specific bases and readouts |
-| Statistical inference | Bootstrap, randomization, LOO | Empirical estimates and decisions |
-| Reproducibility | Synthetic demo + tests + CI | Private raw artifacts and paper figures |
+The repository includes deterministic synthetic data so the complete pipeline can be inspected and executed end to end. The example values are generated for demonstration and testing and are not empirical measurements.
 
-## Suggested GitHub description
+Research-specific stimuli, model checkpoints, and study results are not distributed in this repository.
 
-> Publication-safe portfolio of a controlled representation-to-intervention workflow for context-sensitive language-model analysis.
+## Testing
 
-Suggested topics: `language-models`, `mechanistic-interpretability`, `representation-analysis`, `causal-interventions`, `statistical-inference`, `reproducible-research`, `python`.
+Run the test suite with:
+
+```bash
+pytest -q
+```
+
+The tests cover deterministic splitting, vector geometry, statistical inference, subspace construction, and intervention operations.
 
 ## Citation
 
-During peer review, cite this repository as software rather than as a numerical reproduction package. See [`CITATION.cff`](CITATION.cff).
+See [`CITATION.cff`](CITATION.cff).
 
 ## License
 
